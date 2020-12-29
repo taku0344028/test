@@ -7,7 +7,7 @@ import { Request, Response, NextFunction } from 'express';
 
 const User = {
     name: 'tookubo',
-    email: 'hogehoge@google.com',
+    email: 'hoge112x33x34hoge@google.com',
     password: 'password'
 };
 

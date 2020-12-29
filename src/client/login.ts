@@ -1,7 +1,7 @@
 class UserProfile {
     imgSrc: string = '';
     name: string = '大久保 拓也';
-    reAuthEmail: string = 'hogehoge@google.com';
+    reAuthEmail: string = 'hoge112x33x34hoge@google.com';
 }
 
 const getUserProfile = (): UserProfile => {
