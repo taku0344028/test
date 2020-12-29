@@ -1,4 +1,5 @@
 import 'bootstrap';
+import Game from './game';
 
 class Connector {
     private host: string;
@@ -44,6 +45,12 @@ window.addEventListener('load', () => {
         input.focus();
         return false;
     });
+
+    const game = new Game();
+    const canvas: HTMLCanvasElement = document.getElementById('mainBoard') as HTMLCanvasElement;
+    canvas.width = 2560;
+    canvas.height = 1280;
+    game.init(canvas).then(g => g.start());
 });
 
 // This file ends here.
