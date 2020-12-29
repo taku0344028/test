@@ -1,4 +1,5 @@
 node_modules/
 src/*/*.js
 src/*.js
-public/
+public/javascripts/
+public/stylesheets/
