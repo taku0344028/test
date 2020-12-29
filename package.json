@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./src/bin/www.ts",
+    "build": "tsc",
+    "start": "node ./src/bin/www.js",
     "webpack": "webpack",
     "watch": "nodemon"
   },
