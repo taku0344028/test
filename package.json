@@ -31,6 +31,8 @@
     "morgan": "^1.10.0",
     "node-sass-middleware": "^0.11.0",
     "passport": "^0.4.1",
+    "passport-google-oauth20": "^2.0.0",
+    "passport-local": "^1.0.0",
     "serve-static": "^1.14.1"
   },
   "devDependencies": {
@@ -53,8 +55,6 @@
     "connect-flash": "^0.1.1",
     "jquery": "^3.5.1",
     "nodemon": "^2.0.6",
-    "passport-google-oauth20": "^2.0.0",
-    "passport-local": "^1.0.0",
     "popper.js": "^1.16.1",
     "sequelize": "^6.3.5",
     "ts-loader": "^8.0.12",
