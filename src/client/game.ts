@@ -139,6 +139,8 @@ class Game {
             componentPosition['hand'].h * this.canvas.clientHeight
             ));
         this.view.hand = this.hand;
+        this.canvas.addEventListener('mouseover', (event) => {
+        });
     }
     start() {
         this.view.draw();
