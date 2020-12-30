@@ -12,34 +12,64 @@
 
 import { getCardId, CardImageManager } from './imageManager';
 
-interface Component {
+interface IComponent {
+    x: number,
+    y: number,
+    width: number,
+    height: number,
     draw(ctx: CanvasRenderingContext2D): void;
 }
 
-class Hand implements Component {
+class Component implements IComponent {
+    private _x: number;
+    private _y: number;
+    private _width: number;
+    private _height: number;
+    get x() {return this._x;}
+    get y() {return this._y;}
+    get width() {return this._width;}
+    get height() {return this._height;}
+    constructor(x: number, y: number, width: number, height: number) {
+        this._x = x;
+        this._y = y;
+        this._width = width;
+        this._height = height;
+    }
+    draw(ctx: CanvasRenderingContext2D): void {
+        ctx.strokeRect(0, 0, this.width, this.height);
+    }
+}
+
+class Hand extends Component {
     private cards: string[] = [];
     draw(ctx: CanvasRenderingContext2D): void {
+        ctx.save();
+        ctx.translate(this.x, this.y);
         const cim = CardImageManager.instance;
-        this.cards.forEach((card, index) => {
-            ctx.drawImage(cim.getCardById(card), 40 * index, 0, 120, 160);
+        const margin = this.width / this.cards.length;
+        this.cards.forEach((cardId, index) => {
+            const card = cim.getCardById(cardId);
+            const w = card.width * (this.height / card.height);
+            ctx.drawImage(card, margin * index, 0, w, this.height);
         });
+        super.draw(ctx);
+        ctx.restore();
     }
     append(card: string) {
         this.cards.push(card);
     }
     set hand(hand: string[]) {
-        this.cards = hand;
+        this.cards = hand.sort();
     }
 }
 
 class View {
-    private width: number = 2560;
-    private height: number = 1280;
+    private width: number = 1280;
+    private height: number = 640;
     private ctx: CanvasRenderingContext2D;
-    private components: {[name: string]: {x: number, y: number, component: Component}} = {};
+    private components: {[name: string]: IComponent} = {};
     constructor(ctx: CanvasRenderingContext2D) {
         this.ctx = ctx;
-        this.ctx.scale(2, 2);
     }
     clear() {
         this.ctx.clearRect(0, 0, this.width, this.height);
@@ -47,27 +77,14 @@ class View {
     draw() {
         this.clear();
         for (let component of Object.values(this.components)) {
-            this.ctx.save();
-            this.ctx.translate(component.x, component.y);
-            component.component.draw(this.ctx);
-            this.ctx.restore();
+            component.draw(this.ctx);
         }
-
-        this.ctx.fillRect(10, 10, 10, 10);
-        this.ctx.fillRect(1230, 0, 100, 100);
-        this.ctx.fillRect(2510, 0, 100, 100);
-        this.ctx.fillRect(0, 590, 100, 100);
-
     }
-    append(name: string, component: Component) {
-        this.components[name] = {
-            x: 0,
-            y: 0,
-            component: component
-        };
+    append(name: string, component: IComponent) {
+        this.components[name] = component;
     }
     set hand(hand: string[]) {
-        (this.components['hand'].component as Hand).hand = hand;
+        (this.components['hand'] as Hand).hand = hand;
     }
 }
 
@@ -79,6 +96,10 @@ class Config {
     startingHandSize: number = 6;
     // 描画品質
     drawingQuality: number = 2;
+}
+
+const componentPosition = {
+    'hand': {x: 0.05, y: 0.6, w: 0.9, h: 0.35}
 }
 
 class Game {
@@ -111,7 +132,12 @@ class Game {
         for (let i = 0; i < this.conf.startingHandSize; i++) {
            this.hand.push(this.cards[Math.floor(this.cards.length * Math.random())]);
         }
-        this.view.append('hand', new Hand);
+        this.view.append('hand', new Hand(
+            componentPosition['hand'].x * this.canvas.clientWidth,
+            componentPosition['hand'].y * this.canvas.clientHeight,
+            componentPosition['hand'].w * this.canvas.clientWidth,
+            componentPosition['hand'].h * this.canvas.clientHeight
+            ));
         this.view.hand = this.hand;
     }
     start() {
