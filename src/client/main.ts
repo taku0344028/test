@@ -23,10 +23,15 @@ class Connector {
 }
 
 window.addEventListener('load', () => {
+    const canvas: HTMLCanvasElement = document.getElementById('mainBoard') as HTMLCanvasElement;
+    const game = new Game(canvas);
+    game.init(canvas).then(() => game.start());
     const textarea = document.getElementById('log') as HTMLTextAreaElement;
     const messageFunction = (event: MessageEvent) => {
         const data = JSON.parse(event.data);
         textarea.value += `[${data.username}]: ${data.message}\n`;
+        const command = 'deal';
+        game.update(command);
     }
     const connector = new Connector(location.origin, messageFunction);
     connector.init();
@@ -45,12 +50,6 @@ window.addEventListener('load', () => {
         input.focus();
         return false;
     });
-
-    const game = new Game();
-    const canvas: HTMLCanvasElement = document.getElementById('mainBoard') as HTMLCanvasElement;
-    canvas.width = 2560;
-    canvas.height = 1280;
-    game.init(canvas).then(g => g.start());
 });
 
 // This file ends here.
