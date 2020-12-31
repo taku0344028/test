@@ -23,6 +23,10 @@ const loadProfile = (callback: (profile: UserProfile) => void) => {
     callback(profile);
 }
 
+const saveProfile = () => {
+    
+}
+
 window.addEventListener('load', () => {
     loadProfile((profile) => {
         if (document) {

@@ -140,6 +140,7 @@ class Game {
             ));
         this.view.hand = this.hand;
         this.canvas.addEventListener('mouseover', (event) => {
+            console.log(`${event.clientX}, ${event.clientY}`);
         });
     }
     start() {

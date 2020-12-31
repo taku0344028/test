@@ -1,38 +1,43 @@
-import { Sequelize, DataTypes, Model, Op } from 'sequelize';
 import bcrypt from 'bcrypt';
 
 interface IUser {
     name: string,
+    email: string,
     password: string
 }
 
-const dataFile = 'dat/users.sqlite';
+interface IAuthData {
+    salt: string,
+    password: string
+}
 
-const sequelize = new Sequelize({
-    dialect: 'sqlite',
-    storage: dataFile
-});
-
-const User = sequelize.define('user', {
-    name: {
-        type: DataTypes.STRING, allowNull: false, unique: true
-    },
-    password: {
-        type: DataTypes.STRING, allowNull: false
+class UserManager {
+    private data: {[key: string]: IAuthData} = {}
+    findUser(user: IUser): boolean {
+        if (this.data[user.email]) {
+            return true;
+        }
+        return false;
     }
-});
+    auth(user: IUser): boolean {
+        if (!this.data[user.email]) {
+            return false;
+        }
+        const password = bcrypt.hashSync(user.password, this.data[user.email].salt);
+        return this.data[user.email].password == password;
+    }
+    registration(user: IUser) {
+        if (this.findUser(user)) return false;
+        const salt = bcrypt.genSaltSync();
+        this.data[user.email] = {
+            salt: salt,
+            password: bcrypt.hashSync(user.password, salt)
+        }
+        return true;
+    }
+}
 
-(async () => {
-    await User.sync();
-    const user = await User.create({
-        name: 'admin',
-        password: 'password'
-    });
-
-    const users = await User.findAll();
-    users.forEach(user => {
-        console.log(user);
-    });
-})();
+export default UserManager;
+export { IUser };
 
 // This file ends here.
