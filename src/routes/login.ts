@@ -26,7 +26,9 @@ const googleStrategyOption = {
 
 passport.use(new GoogleStrategy(googleStrategyOption, (accessToken, refreshToken, profile, done) => {
     if (profile) {
-        return done(undefined, profile)
+        return done(undefined, {
+            name: profile.displayName
+        });
     }
 }));
 
@@ -74,7 +76,7 @@ router.use(passport.session());
 router.use(flash());
 
 router.get('/login/google', passport.authenticate('google', {
-    scope: ['profile']
+    scope: ['profile', 'email']
 }));
 
 router.get('/login/google/callback', passport.authenticate('google', {
