@@ -21,7 +21,7 @@ const User = {
 const googleStrategyOption = {
     clientID: process.env.GOOGLE_CLIENT_ID as string,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-    callbackURL: "http://ws-sample-forest.herokuapp.com/login/google/callback"
+    callbackURL: "https://ws-sample-forest.herokuapp.com/login/google/callback"
 };
 
 passport.use(new GoogleStrategy(googleStrategyOption, (accessToken, refreshToken, profile, done) => {
@@ -35,7 +35,7 @@ passport.use(new GoogleStrategy(googleStrategyOption, (accessToken, refreshToken
 const facebookStrategyOption = {
     clientID: process.env.FACEBOOK_CLIENT_ID as string,
     clientSecret: process.env.FACEBOOK_CLIENT_SECRET as string,
-    callbackURL: "http://ws-sample-forest.herokuapp.com/login/facebook/callback"
+    callbackURL: "https://ws-sample-forest.herokuapp.com/login/facebook/callback"
 };
 
 passport.use(new FacebookStrategy(facebookStrategyOption, (accessToken, refreshToken, profile, done) => {
