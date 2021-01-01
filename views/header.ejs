@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Forest</title>
+  <link rel="stylesheet" href="/stylesheets/style.css" />
+</head>
+<body>
+    <header class="navbar navbar-expand-sm navbar-dark bg-dark">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navmenu" aria-controls="navmenu"
+        aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navmenu">
+        <div class="navbar-nav mr-auto">
+          <a class="nav-item nav-link active" href="#">HOME</a>
+        </div>
+        <div class="navbar-nav">
+          <a class="nav-item" href="#">
+            <img src="<%= user.photo %>" alt="" width="40" height="40"/>
+          </a>
+          <a class="nav-item nav-link" href="/user">
+            <%= user.name %>
+          </a>
+          <a class="nav-item nav-link" href="/logout">ログアウト</a>
+        </div>
+      </div>
+    </header>

@@ -1,0 +1,17 @@
+<%- include('header'); %>
+
+<main>
+    <canvas id="mainBoard">
+    </canvas>
+    <form action="#" id="mainForm">
+      <div class="form-group">
+        <textarea class="form-control" name="" id="log" cols="30" rows="10" disabled></textarea>
+        <input type="text" class="form-control" id="message">
+        <input type="hidden" id="username" name="name" value="<%= user.name %>">
+      </div>
+    </form>
+  </main>
+  <script src="/javascripts/main.bundle.js"></script>
+</body>
+
+</html>

@@ -13,7 +13,7 @@ class Connector {
         this.ws = new WebSocket(this.host);
         this.ws.onmessage = this.onMessageFunction;
         this.ws.onclose = (event) => {
-            console.log('close websocket reconnect now');
+            console.log(`close websocket reconnect now, host = ${this.host}`);
             this.init();
         }
     }
@@ -33,7 +33,7 @@ window.addEventListener('load', () => {
         const command = 'deal';
         game.update(command);
     }
-    const connector = new Connector(location.origin, messageFunction);
+    const connector = new Connector(location.href, messageFunction);
     connector.init();
 
     const form = document.getElementById('mainForm');

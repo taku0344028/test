@@ -2,6 +2,7 @@ import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as FacebookStrategy } from 'passport-facebook';
+import { Strategy as TwitterStrategy } from 'passport-twitter';
 import flash from 'connect-flash';
 import express from 'express';
 import { Request, Response, NextFunction } from 'express';
@@ -10,24 +11,21 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+const host = process.env.DEVELOP_MODE ? "http://localhost:3000" : "https://ws-sample-forest.herokuapp.com";
 const userManager = new UserManager;
-
-const User = {
-    name: 'tookubo',
-    email: 'hoge112x33x34hoge@google.com',
-    password: 'password'
-};
 
 const googleStrategyOption = {
     clientID: process.env.GOOGLE_CLIENT_ID as string,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-    callbackURL: "https://ws-sample-forest.herokuapp.com/login/google/callback"
+    callbackURL: `${host}/login/google/callback`
 };
 
 passport.use(new GoogleStrategy(googleStrategyOption, (accessToken, refreshToken, profile, done) => {
     if (profile) {
+        console.log(profile.photos);
         return done(undefined, {
-            name: profile.displayName
+            name: profile.displayName,
+            photo: profile.photos ? profile.photos[0].value : ''
         });
     }
 }));
@@ -35,12 +33,30 @@ passport.use(new GoogleStrategy(googleStrategyOption, (accessToken, refreshToken
 const facebookStrategyOption = {
     clientID: process.env.FACEBOOK_CLIENT_ID as string,
     clientSecret: process.env.FACEBOOK_CLIENT_SECRET as string,
-    callbackURL: "https://ws-sample-forest.herokuapp.com/login/facebook/callback"
+    callbackURL: `${host}/login/facebook/callback`
 };
 
 passport.use(new FacebookStrategy(facebookStrategyOption, (accessToken, refreshToken, profile, done) => {
     if (profile) {
-        return done(undefined, profile);
+        return done(undefined, {
+            name: profile.displayName,
+            photo: profile.photos ? profile.photos[0].value : ''
+        });
+    }
+}));
+
+const twitterStrategyOption = {
+    consumerKey: process.env.TWITTER_API_KEY as string,
+    consumerSecret: process.env.TWITTER_API_KEY_SECRET as string,
+    callbackURL: `${host}/login/twitter/callback`
+};
+
+passport.use(new TwitterStrategy(twitterStrategyOption, (accessToken, refreshToken, profile, done) => {
+    if (profile) {
+        return done(undefined, {
+            name: profile.displayName,
+            photo: profile.photos ? profile.photos[0].value : ''
+        })
     }
 }));
 
@@ -58,7 +74,7 @@ passport.use(new LocalStrategy({
     if (!userManager.auth(user)) {
         return done(null, false, {message: 'Password incorrect'});
     }
-    return done(null, {name: User.name});
+    return done(null, {name: 'test'});
 }));
 
 passport.serializeUser((user, done) => {
@@ -75,21 +91,18 @@ router.use(passport.initialize());
 router.use(passport.session());
 router.use(flash());
 
-router.get('/login/google', passport.authenticate('google', {
-    scope: ['profile', 'email']
-}));
+router.get('/login/:provider', (req, res, next) => {
+    const provider = req.params.provider;
+    passport.authenticate(provider, {scope: ['profile']})(req, res, next);
+});
 
-router.get('/login/google/callback', passport.authenticate('google', {
-    failureRedirect: '/login',
-    successRedirect: '/success'
-}));
-
-router.get('/login/facebook', passport.authenticate('facebook'));
-
-router.get('/login/facebook/callback', passport.authenticate('facebook', {
-    failureRedirect: '/login',
-    successRedirect: '/success'
-}));
+router.get('/login/:provider/callback', (req, res, next) => {
+    const provider = req.params.provider;
+    passport.authenticate(provider, {
+        failureRedirect: '/login',
+        successRedirect: '/success'
+    })(req, res, next);
+});
 
 router.get('/login', (req: Request, res: Response, next: NextFunction) => {
     res.render('login');

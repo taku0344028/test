@@ -1,41 +1,26 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-  <title>YB</title>
-  <link rel="stylesheet" href="/stylesheets/style.css" />
-</head>
-
-<body>
-  <header class="navbar navbar-expand-sm navbar-dark bg-dark">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navmenu" aria-controls="navmenu"
-      aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navmenu">
-      <div class="navbar-nav mr-auto">
-        <a class="nav-item nav-link active" href="#">HOME</a>
-      </div>
-      <div class="navbar-nav">
-        <a class="nav-item nav-link" href="/user">
-          <%= user.name %>
-        </a>
-        <a class="nav-item nav-link" href="/logout">ログアウト</a>
-      </div>
+<%- include('header'); %>
+<main>
+  <table class="table table-striped table-bordered">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">ルーム番号</th>
+        <th scope="col">ルーム名</th>
+        <th scope="col">マスター</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% roomData.forEach((room, index) => { %>
+        <tr>
+          <th scope="row"><%= index %></th>
+          <td><a href="/game/<%= room.id %>"><%= room.name %></a></td>
+          <td><%= room.master %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+  <form action="/create" method="POST">
+    <div class="form-group">
+      <input type="submit" class="form-control" value="ルーム新規作成">
     </div>
-  </header>
-  <main>
-    <canvas id="mainBoard">
-    </canvas>
-    <form action="#" id="mainForm">
-      <div class="form-group">
-        <textarea class="form-control" name="" id="log" cols="30" rows="10" disabled></textarea>
-        <input type="text" class="form-control" id="message">
-        <input type="hidden" id="username" name="name" value="<%= user.name %>">
-      </div>
-    </form>
-  </main>
-  <script src="/javascripts/main.bundle.js"></script>
-</body>
-
-</html>
+  </form>
+</main>

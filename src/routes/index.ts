@@ -1,15 +1,9 @@
 import express from 'express';
 import { Request, Response, NextFunction } from 'express';
-import expressWs from 'express-ws';
-import WebSocket from 'ws';
-
+import GameRouter from './game';
 import loginRouter from './login';
 
-const { applyTo } = expressWs(express());
-applyTo(express.Router());
-
 const router = express.Router();
-const clients = new Set<WebSocket>();
 
 const loginCheck = (req: Request, res: Response, next: NextFunction) => {
     if (req.user) {
@@ -23,26 +17,29 @@ const loginCheck = (req: Request, res: Response, next: NextFunction) => {
 router.use(loginRouter);
 
 router.all('/', loginCheck);
+router.use(loginCheck, GameRouter);
 router.get('/user', loginCheck, (req, res) => {
     res.render('user', { user: req.user });
 });
 
-router.ws('/', (ws, req) => {
-    clients.add(ws);
-    ws.on('message', msg => {
-        clients.forEach(client => {
-            client.send(msg);
-        });
-    });
-    ws.on('close', () => {
-        clients.delete(ws);
-    });
-});
+const dummyData = [
+    {id: 1, name: "テスト", master: "たくや"},
+    {id: 12, name: "てすと", master: "渋木"},
+    {id: 13, name: "なにか", master: "tookubo"}
+];
 
 router.get('/', (req: Request, res: Response, next: NextFunction) => {
-    res.render('index', { user: req.user });
+    res.render('index', { user: req.user, roomData: dummyData });
 });
 
+/**
+ * ルームを新規作成して、作成したルームにリダイレクトする
+ */
+router.post('/create', loginCheck, (req, res, next) => {
+    const id = 1;
+    console.log(`create new room id = ${id}`);
+    res.redirect(`/game/${id}`);
+});
 
 export default router;
 
