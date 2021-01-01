@@ -33,7 +33,8 @@ passport.use(new GoogleStrategy(googleStrategyOption, (accessToken, refreshToken
 const facebookStrategyOption = {
     clientID: process.env.FACEBOOK_CLIENT_ID as string,
     clientSecret: process.env.FACEBOOK_CLIENT_SECRET as string,
-    callbackURL: `${host}/login/facebook/callback`
+    callbackURL: `${host}/login/facebook/callback`,
+    profileFields: ['displayName', 'photos']
 };
 
 passport.use(new FacebookStrategy(facebookStrategyOption, (accessToken, refreshToken, profile, done) => {
@@ -93,7 +94,8 @@ router.use(flash());
 
 router.get('/login/:provider', (req, res, next) => {
     const provider = req.params.provider;
-    passport.authenticate(provider, {scope: ['profile']})(req, res, next);
+    const option = provider == 'facebook' ? {scope: ['public_profile']} : {scope: ['profile']};
+    passport.authenticate(provider, option)(req, res, next);
 });
 
 router.get('/login/:provider/callback', (req, res, next) => {
