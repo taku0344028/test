@@ -6,7 +6,8 @@ interface User {
 }
 
 class Player implements User {
-    private _name: string;
+    protected _name: string;
+    protected _hand: ICard[] = [];
     constructor(name: string) {
         this._name = name;
     }
@@ -69,15 +70,14 @@ class TrumpDeck extends CardDeck {
 }
 
 class Game {
-    private deck: Map<string, Set<ICard>> = new Map<string, Set<ICard>>();
+    private deck: Map<string, CardDeck> = new Map<string, CardDeck>();
     load() {}
     save() {}
     addPlayer() {}
     addCardDeck() {}
 }
 
-const deck = new TrumpDeck();
-deck.shuffle();
-console.log(deck.draw(5));
+export default Game;
+export { TrumpDeck };
 
 // This file ends here.
