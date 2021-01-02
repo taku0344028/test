@@ -75,6 +75,10 @@ passport.use(new LocalStrategy({
     if (!userManager.auth(user)) {
         return done(null, false, {message: 'Password incorrect'});
     }
+    const profile = userManager.getUser(user);
+    if (profile) {
+        return done(null, profile);
+    }
     return done(null, {name: 'test'});
 }));
 
@@ -142,7 +146,6 @@ router.post('/signup', (req, res, next) => {
         res.redirect('login');
     }
     else {
-    // next();
         res.render('signup');
     }
 });
